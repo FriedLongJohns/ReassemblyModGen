@@ -1,10 +1,11 @@
 kbaseSettings = {
-    "features": "PALETTE",
+    "id offset": 50000,
+    "features": ["PALETTE"],
     "colors": 3,
     "args": [
         ("density",.03,.1),
         ("durability",.75,4),
-        ("scale",1,3),#three arguments means [0]+"="+random num (see randfloat() in helpers) between [1] and [2]
+        # ("scale=1"),#three arguments means [0]+"="+random num (see randfloat() in helpers) between [1] and [2]
         ("fillColor","0x"),#0x signifies [0]+"="+[1]+(random hex RGB) format
         ("fillColor1","0x"),
         ("lineColor=0x000000"),#one argument means "add this as is"
@@ -16,7 +17,8 @@ kbaseSettings = {
 
 kblockSettings = {
     "scale bounds": [(1,3),(3,3),(1,2),(2,4)],#only hull blocks scale
-    "weapon bounds": [(3,7),(5,10),(10,20)],
+    "weapon count": [3,5,7,10,15,20],#amount of weapons to make
+    "unique count": [4,10,11,12,13,14],#amount of UNIQUE 1 (or feature group) feature blocks
     "feature groups": [
         #block features: baseSettings[features] + (1 random feature OR 1 random featureGroup)
         #ones that can be added without block change, put as element 0, else put in list
