@@ -4,7 +4,12 @@ kbaseSettings = {
     "args": [
         ("density",.03,.1),
         ("durability",.75,4),
-        ("scale",1,3),
+        ("scale",1,3),#three arguments means [0]+"="+random num (see randfloat() in helpers) between [1] and [2]
+        ("fillColor","0x"),#0x signifies [0]+"="+[1]+(random hex RGB) format
+        ("fillColor1","0x"),
+        ("lineColor=0x000000"),#one argument means "add this as is"
+        ("group=1")
+        #line color is always black because that's how I like it.
     ]
 }
 
@@ -35,6 +40,7 @@ kblockSettings = {
                     ("power",1,100),
                     ("decay",0,1.2),
                     ("width",.1,3),
+                    ("color","0xff"),
                 ],
             },
         },
@@ -54,6 +60,7 @@ kblockSettings = {
                     ("muzzleVel",500,2400),
                     ("recoil",0.0,3),
                     ("burstyness",0.0,1),
+                    ("color","0xff")
                 ]
             },
         },
@@ -81,6 +88,9 @@ kblockSettings = {
                     ("scale",1,2),
                     ("explodeRadius",10,80),
                     ("explodeDamage",30,400),
+                    ("fillColor","0x"),
+                    ("fillColor1","0x"),
+                    ("lineColor=0x000000"),
                 ]
             },
         },
