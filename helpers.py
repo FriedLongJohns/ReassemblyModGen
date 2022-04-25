@@ -30,7 +30,7 @@ def randfloat(mn,mx):
 
 def randitem(lst):
     if lst:
-        return lst[random.randint(0,len(lst)-1)]
+        return lst[randint(0,len(lst)-1)]
     return None
 
 def trykey(ky,dct,excep=None):
@@ -41,20 +41,27 @@ def trykey(ky,dct,excep=None):
 blocks=[]
 
 class Block:
-    def __init__(self,features,args,extends=None,extras=[],children=[]):
+    def __init__(self,features,args,extends=None,extras=[],children=[],base=False):
         self.extends=False
+        self.extendBlock=None
         if extends:
             self.extends=True
             self.extendBlock=extends
-        self.id=len(blocks)+1
+
         self.args=args
         self.features=features
+        self.id=len(blocks)+1+kbaseSettings["id offset"]
         self.extras=extras
         self.children=children
+
+        self.actualized=False
+        self.base=base
 
     def actualize(self):
         # unintentionally, you *could* recursively make a launcher with this
         # but the main point of actualize() is to finish all features and prepare the block for randomization
+        if self.actualized:
+            return
         if self.extras:
             for extra in self.extras:
                 if randfloat(0.0,1)>extra[0]:#chance
@@ -74,6 +81,7 @@ class Block:
             new_child=(child["name"],blk)
             new_children.append(new_child)
         self.children=new_children
+        self.actualized=True
 
 
 
@@ -88,14 +96,19 @@ class Block:
                 ine=False
                 a=self.args[i]
                 for ea in self.extendBlock.args:
-                    if a[0]==ea[0]:
+                    if len(a)==len(ea) and a[0]==ea[0]:
                         ine=True
                 if not ine:
                     args.append(a)
 
-        lines=["{"]
+        lines=["{","\t"+str(self.id)+","]
+        if self.extends:
+            lines.append("\textends="+str(self.extendBlock.id)+",")
         if features:
-            lines+=["\t"+str(self.id)+",","\tfeatures="+"|".join(features)+","]#{id,feats=x|y|z,
+            if self.base:
+                lines+=["\tfeatures=NOPALETTE,"]
+            else:
+                lines+=["\tfeatures="+"|".join(features)+","]#{id,feats=x|y|z,
 
         for arg in args:#arg=value,
             if len(arg)==3:
@@ -121,7 +134,10 @@ class Block:
 
 def genBases(num=kbaseSettings["colors"],features=kbaseSettings["features"],args=kbaseSettings["args"]):
     global blocks
+    out=[]
     for i in range(num):
-        block=Block(features,args)
+        block=Block(features,args,base=True)
         block.actualize()
         blocks.append(block)
+        out.append(block)
+    return out
