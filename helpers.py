@@ -106,7 +106,7 @@ class Block:
             lines.append("\textends="+str(self.extendBlock.id)+",")
         if features:
             if self.base:
-                lines+=["\tfeatures=NOPALETTE,"]
+                lines+=["\tfeatures=NOPALETTE,\n\tname=\"Base Block\","]
             else:
                 lines+=["\tfeatures="+"|".join(features)+","]#{id,feats=x|y|z,
 
