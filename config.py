@@ -9,7 +9,7 @@ kbaseSettings = {
         ("fillColor","0x"),#0x signifies [0]+"="+[1]+(random hex RGB) format
         ("fillColor1","0x"),
         ("lineColor=0x000000"),#one argument means "add this as is"
-        ("group=1")
+        ("group=1"),
         #line color is always black because that's how I like it.
     ]
 }
