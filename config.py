@@ -8,8 +8,9 @@ kbaseSettings = {
         # ("scale=1"),#three arguments means [0]+"="+random num (see randfloat() in helpers) between [1] and [2]
         ("fillColor","0x"),#0x signifies [0]+"="+[1]+(random hex RGB) format
         ("fillColor1","0x"),
-        ("lineColor=0x000000"),#one argument means "add this as is"
+        ("lineColor=0x000000"),#one argument (or an incorrect format) means "add this as is"
         ("group=1"),
+        #("text", [a,b,c...]) or ("text", (a,b,c...)) signifies "pick one from the list"
         #line color is always black because that's how I like it.
     ]
 }
@@ -20,8 +21,8 @@ kblockSettings = {
     "weapon count": [3,5,7,10,15,20],#amount of weapons to make
     "unique count": [4,10,11,12,13,14],#amount of UNIQUE 1 (or feature group) feature blocks
     "feature groups": [
-        #block features: baseSettings[features] + (1 random feature OR 1 random featureGroup)
-        #ones that can be added without block change, put as element 0, else put in list
+        #unique block features: 1 random feature OR 1 random featureGroup
+        #ones that can be added without block change, put as element 0, else put in list and they will be added from ["features"]
         ("ACTIVATE",["THRUSTER"]),
         ("ACTIVATE",["CANNON"]),
     ],
@@ -72,13 +73,12 @@ kblockSettings = {
             ],
             "args":[
                 ("replicateTime",.1,10),
-                ("replicatePower",50,700),
-                ("launcherOutForce",0,500),
+                ("launcherPower",50,700),
+                ("launcherOutSpeed",-500,1500),
             ],
             "child": {
                 "name": "replicateBlock",
-                "features": "COMMAND|EXPLOSIVE",
-                "shape": ("MISSILE","DISH_MISSILE","ISOTRI_25_MISSILE","ISOTRI_13_MISSILE","SQUARE_MISSILE","COMMAND_MISSILE"),
+                "features": ["COMMAND","EXPLODE"],
                 "extras": [
                     (.9,"THRUSTER",[("thrusterForce",1000,5000)]),
                     (.9,"TORQUER",[("torquerTorque",10,100)]),
@@ -93,16 +93,22 @@ kblockSettings = {
                     ("fillColor","0x"),
                     ("fillColor1","0x"),
                     ("lineColor=0x000000"),
+                    ("shape",("MISSILE","DISH_MISSILE","ISOTRI_25_MISSILE","ISOTRI_13_MISSILE","SQUARE_MISSILE","COMMAND_MISSILE"))
                 ]
             },
         },
+
         "THRUSTER": {
             "extras": [(.1,"ACTIVATE",[("activatePower",1,100)])],
-            "shape": ("DISH_THRUSTER","THRUSTER","THRUSTER_PENT","THRUSTER_RECT"),
             "args": [
-                (.9,"THRUSTER",[("thrusterForce",10000,50000)]),
+                ("thrusterForce",10000,50000),
+                ("thrusterColor","0x"),
+                ("thrusterColor1","0x"),
             ]
         },
+
+        #short ones after here
+        "TRACTOR":{"args":[("tractorRadius",100,1200)]}
     }
 
 }
