@@ -57,51 +57,71 @@ class Block:
         self.actualized=False
         self.base=base
 
-    def actualize(self):
-        # unintentionally, you *could* recursively make a launcher with this
-        # but the main point of actualize() is to finish all features and prepare the block for randomization
-        if self.actualized:
-            return
-        if self.extras:
+    def actualize(self,verify=True):
+        # the main point of actualize() is to finish all features and prepare the block for randomization
+        # and also verify self integrity so we don't gave duplicate features/args
+
+        if (not self.actualized) and self.extras:
             for extra in self.extras:
-                if randfloat(0.0,1)>extra[0]:#chance
+                if randfloat(0.0,1.0)>extra[0]:#chance
                     self.features.append(extra[1])
                     if len(extra)!=2:
-                        self.args+=extra[2]
+                        for arg in extra[2]:
+                            self.args.append(arg)
 
-        new_children=[]
-        for child in self.children:
-            blk=Block(
-                trykey("features",child,excep=[]),
-                child["args"],
-                extends=False,
-                extras=trykey("extras",child,excep=[]),
-            )
-            blk.actualize()
-            new_child=(child["name"],blk)
-            new_children.append(new_child)
-        self.children=new_children
-        self.actualized=True
+            new_children=[]
+            for child in self.children:
+                blk=Block(
+                    trykey("features",child,excep=[]),
+                    child["args"],
+                    extends=False,
+                    extras=trykey("extras",child,excep=[]),
+                )
+                blk.actualize()
+                new_child=(child["name"],blk)
+                new_children.append(new_child)
+
+            self.children=new_children
+            self.actualized=True
+
+        if verify:
+            nargs=[]
+            for arg in self.args:
+                if not arg in nargs:
+                    nargs.append(arg)
+            self.args=nargs
+            nfeat=[]
+            for feat in self.features:
+                if not feat in nfeat:
+                    nfeat.append(feat)
+            self.features=nfeat
+
+        # print(str(self.id)+"  act args: "+str(self.args))
 
 
 
-    def text(self,out="str"):#out can be str or list
+    def text(self,out="str",id=True):#out can be str or list
+        # print(str(self.id)+"  text feats: "+"|".join(self.features))
         features=self.features
         args=self.args
+        # print(args)
+
         if self.extends:
             features+=self.extendBlock.features#append their features
 
-            args=[]
-            for i in range(len(self.args)):#and make sure not to ovverwrite their args
-                ine=False
-                a=self.args[i]
-                for ea in self.extendBlock.args:
-                    if len(a)==len(ea) and a[0]==ea[0]:
-                        ine=True
-                if not ine:
-                    args.append(a)
+            # args=[]
+            # for i in range(len(self.args)):#and make sure not to ovverwrite their args
+            #     ine=False
+            #     a=self.args[i]
+            #     for ea in self.extendBlock.args:
+            #         if len(a)==len(ea) and a[0]==ea[0]:
+            #             ine=True
+            #     if not ine:
+            #         args.append(a)
 
-        lines=["{","\t"+str(self.id)+","]
+        lines=["{"]
+        if id:
+            lines.append("\t"+str(self.id)+",")
         if self.extends:
             lines.append("\textends="+str(self.extendBlock.id)+",")
         if features:
@@ -113,14 +133,19 @@ class Block:
         for arg in args:#arg=value,
             if len(arg)==3:
                 lines.append("\t"+arg[0]+"="+str(randfloat(arg[1],arg[2]))+",")
-            elif arg[1] in ["0x","0xff"]:
-                lines.append("\t"+arg[0]+"="+arg[1]+randColor()+",")
+            elif len(arg)==2:
+                if arg[1] in ["0x","0xff"]:
+                    lines.append("\t"+arg[0]+"="+arg[1]+randColor()+",")
+                elif type(arg[1]) in [list,tuple]:
+                    lines.append("\t"+arg[0]+"="+randitem(arg[1])+",")
+                else:
+                    lines.append("\t"+arg+",")
             else:
                 lines.append("\t"+arg+",")
 
         for child in self.children:
-            lines.append("\t"+child[0]+"={\n"+"".join(["\t\t"+i+"\n" for i in child[1].text(out="list")[1:-1]])+"\n\t}")
-        lines.append("}")
+            lines.append("\t"+child[0]+"={\n"+"".join(["\t\t"+i+"\n" for i in child[1].text(out="list",id=False)[1:-1]])+"\n\t}")
+        lines.append("}\n")
 
         if out=="str":
             return "\n".join(lines)
