@@ -63,7 +63,7 @@ class Block:
 
         if (not self.actualized) and self.extras:
             for extra in self.extras:
-                if randfloat(0.0,1.0)>extra[0]:#chance
+                if randfloat(0.0,1.0)<=extra[0]:#chance
                     self.features.append(extra[1])
                     if len(extra)!=2:
                         for arg in extra[2]:
@@ -151,17 +151,11 @@ class Block:
             return "\n".join(lines)
         return lines
 
-# print("input: LASER features+extras+child, with baseSettings")
-# print("expected block: LASER w/ chance of TURRET and/or CHARGING")
-# blk=Block(["LASER"],kbaseSettings["args"],extras=kblockSettings["features"]["LASER"]["extras"],children=[kblockSettings["features"]["LASER"]["child"]])
-# blk.actualize()
-# print(blk.text())
-
 def genBases(num=kbaseSettings["colors"],features=kbaseSettings["features"],args=kbaseSettings["args"]):
     global blocks
     out=[]
     for i in range(num):
-        block=Block(features,args,base=True)
+        block=Block(features,args+[("sort=0")],base=True)
         block.actualize()
         blocks.append(block)
         out.append(block)
