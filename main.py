@@ -40,38 +40,6 @@ for shape in bpal["hull"]:
             #but that's just because of all the library work happening here
 print("\n>> finished hull generation with "+str(count)+" blocks")
 
-count=[]
-for i in range(wcount):
-    kind=hp.randitem(["LASER","CANNON","LAUNCHER"])
-    data=kblockSettings["features"][kind]
-
-    blonk=hp.Block(
-        [kind],
-        data["args"]+[("sort=5")],
-        extras=data["extras"],
-        children=[data["child"]],
-        extends=hp.randitem(bases),
-    )
-    blonk.actualize()#have to actualize to do shape
-    count.append(kind)
-
-    if kind=="LAUNCHER":
-        blonk.args.append(("shape",bpal["launchers"]))
-        blonk.args.append(("name=\"launcher\""))
-    elif not "TURRET" in blonk.args:
-        blonk.args.append(("shape",bpal["spinals"]))
-        blonk.args.append(("name=\"spinal weapon\""))
-        count[-1]+=" (spinal)"
-    else:
-        blonk.args.append(("shape",bpal["turrets"]))
-        blonk.args.append(("name=\"turreted weapon\""))
-        count[-1]+=" (turreted)"
-
-    hp.blocks.append(blonk)
-
-print("\n>> finished weapon generation with "+str(len(count))+" weapons!")
-print(">> "+", ".join(count))
-
 thrust_scale_mult = hp.randfloat(.9,1.2)
 thrust_shape=hp.randitem(["THRUSTER","THRUSTER_PENT","DISH_THRUSTER","THRUSTER_RECT"])
 thrusterForce=hp.randfloat(7000,15000)
@@ -80,7 +48,7 @@ print("\n>> generating thrusters")
 print(">> INFO: each thruster's thrusterForce will be base force * scale * thrusterForce scale")
 print(">> base thrusterForce: "+str(thrusterForce))
 print(">> thrusterForce scale: "+str(thrust_scale_mult))
-print(">> thruster shape: thrust_shape")
+print(">> thruster shape:" +str(thrust_shape))
 print(">> palette-inherited scales: "+str(bscales[0])+"-"+str(bscales[1]))
 print(">> extending from base "+str(extend.id)[-1])
 
@@ -96,6 +64,42 @@ for scale in range(bscales[0],bscales[1]+1):
 
 print("\n finished thruster generation with "+str(len(count))+" thrusters!")
 print(">> "+" | ".join(["scale: "+str(i[0])+", thrusterForce="+str(i[1]) for i in count]))
+
+count=[]
+for i in range(wcount):
+    kind=hp.randitem(["LASER","CANNON","LAUNCHER"])
+    data=kblockSettings["features"][kind]
+
+    blonk=hp.Block(
+        [kind],
+        data["args"]+[("sort=5")],
+        extras=data["extras"],
+        children=[data["child"]],
+        extends=hp.randitem(bases),
+    )
+    blonk.actualize()#have to actualize to do shape
+    count.append(kind)
+
+    if "AUTOFIRE" in blonk.features:
+        blonk.args[-1]=("sort=4")
+        blonk.args.append(("name=\"PD\""))
+        count[-1]+=" (PD)"
+    elif kind=="LAUNCHER":
+        blonk.args.append(("shape",bpal["launchers"]))
+        blonk.args.append(("name=\"launcher\""))
+    elif "TURRET" in blonk.features:
+        blonk.args.append(("shape",bpal["turrets"]))
+        blonk.args.append(("name=\"turreted weapon\""))
+        count[-1]+=" (turreted)"
+    else:
+        blonk.args.append(("shape",bpal["spinals"]))
+        blonk.args.append(("name=\"spinal weapon\""))
+        count[-1]+=" (spinal)"
+
+    hp.blocks.append(blonk)
+
+print("\n>> finished weapon generation with "+str(len(count))+" weapons!")
+print(">> "+", ".join(count))
 
 out=input("\ndump data to file?(y/n) ")
 if out=="y":
