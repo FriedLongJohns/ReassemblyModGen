@@ -19,15 +19,26 @@ print("\tunique count: "+str(ucount))
 #__init__(self,features,args,extends=None,extras=[],children=[])
 
 print("\nBLOCK GENERATION STARTED")
+
+core=hp.Block(
+    ["COMMAND"],
+    [("command={}"),("sort=1")],
+    extends=hp.randitem(bases),
+    extras=kblockSettings["features"]["COMMAND"]["extras"],
+)
+core.actualize()
+print("\n>> generated core with features "+"|".join(core.features))
+hp.blocks.append(core)
+
 count=0
 for shape in bpal["hull"]:
     for s in range(bscales[0],bscales[1]+1):
         for b in bases:
-            hp.blocks.append(hp.Block([],[("shape="+shape),("scale="+str(s)),("name=\"hull\"")],extends=b))
+            hp.blocks.append(hp.Block([],[("shape="+shape),("scale="+str(s)),("name=\"hull\""),("sort=2")],extends=b))
             count+=1
             #it feels wrong this is all the code needed to do this
             #but that's just because of all the library work happening here
-print("\n>>finished hull generation with "+str(count)+" blocks")
+print("\n>> finished hull generation with "+str(count)+" blocks")
 
 count=[]
 for i in range(wcount):
@@ -36,7 +47,7 @@ for i in range(wcount):
 
     blonk=hp.Block(
         [kind],
-        data["args"],
+        data["args"]+[("sort=5")],
         extras=data["extras"],
         children=[data["child"]],
         extends=hp.randitem(bases),
@@ -58,8 +69,33 @@ for i in range(wcount):
 
     hp.blocks.append(blonk)
 
-print("\n>>finished weapon generation with "+str(len(count))+" weapons!")
+print("\n>> finished weapon generation with "+str(len(count))+" weapons!")
 print(">> "+", ".join(count))
+
+thrust_scale_mult = hp.randfloat(.9,1.2)
+thrust_shape=hp.randitem(["THRUSTER","THRUSTER_PENT","DISH_THRUSTER","THRUSTER_RECT"])
+thrusterForce=hp.randfloat(7000,15000)
+extend=hp.randitem(bases)
+print("\n>> generating thrusters")
+print(">> INFO: each thruster's thrusterForce will be base force * scale * thrusterForce scale")
+print(">> base thrusterForce: "+str(thrusterForce))
+print(">> thrusterForce scale: "+str(thrust_scale_mult))
+print(">> thruster shape: thrust_shape")
+print(">> palette-inherited scales: "+str(bscales[0])+"-"+str(bscales[1]))
+print(">> extending from base "+str(extend.id)[-1])
+
+count=[]
+for scale in range(bscales[0],bscales[1]+1):
+    force=int(thrusterForce*scale*thrust_scale_mult)
+    count.append((scale,force))
+    hp.blocks.append(hp.Block(
+        ["THRUSTER"],
+        [("thrusterForce="+str(force)),("sort=3")] + kblockSettings["features"]["THRUSTER"]["args"][1:],
+        extends=extend,
+    ))
+
+print("\n finished thruster generation with "+str(len(count))+" thrusters!")
+print(">> "+" | ".join(["scale: "+str(i[0])+", thrusterForce="+str(i[1]) for i in count]))
 
 out=input("\ndump data to file?(y/n) ")
 if out=="y":
