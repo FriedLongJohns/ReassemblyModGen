@@ -20,18 +20,12 @@ kblockSettings = {
     "scale bounds": [(1,3),(3,3),(1,2),(2,4)],#only hull blocks scale
     "weapon count": [3,5,7,10,15,20],#amount of weapons to make
     "unique count": [4,10,11,12,13,14],#amount of UNIQUE 1 (or feature group) feature blocks
-    "feature groups": [
-        #unique block features: 1 random feature OR 1 random featureGroup
-        #ones that can be added without block change, put as element 0, else put in list and they will be added from ["features"]
-        ("ACTIVATE",["THRUSTER"]),
-        ("ACTIVATE",["CANNON"]),
-    ],
-
     "features": {#pick features from the set...
         "LASER": {#add the feature and it's arguments...
             "extras": [
                 (.8,"TURRET",[("turretSpeed",.5,5)]),#and chance it's extra features + arguments (if len 3 then args, len 2 no args)
                 (.1,"CHARGING",[("chargeMaxTime",1,10),("chargeMin",.2,.9)]),
+                (.3,"AUTOFIRE",[]),
             ],
             "args":[],
             "child": {
@@ -51,6 +45,7 @@ kblockSettings = {
             "extras": [
                 (.8,"TURRET",[("turretSpeed",.5,5)]),
                 (.1,"CHARGING",[("chargeMaxTime",1,10),("chargeMin",.2,.9)]),
+                (.3,"AUTOFIRE",[]),
             ],
             "args":[],
             "child": {
@@ -80,20 +75,38 @@ kblockSettings = {
                 "name": "replicateBlock",
                 "features": ["COMMAND","EXPLODE"],
                 "extras": [
-                    (.9,"THRUSTER",[("thrusterForce",1000,5000)]),
-                    (.9,"TORQUER",[("torquerTorque",10,100)]),
+                    (.9,"THRUSTER",[("thrusterForce",400,2000)]),
+                    (.9,"TORQUER",[("torquerTorque",200,750)]),
                     (.1,"FIN",[("finForce",5,20)]),
                 ],
                 "args": [
-                    ("density",.001,.01),
+                    ("density",.01,.01),
                     ("durability",.05,.1),
                     ("scale",1,2),
                     ("explodeRadius",10,80),
                     ("explodeDamage",30,400),
+                    ("lifetime",1,9),
                     ("fillColor","0x"),
                     ("fillColor1","0x"),
                     ("lineColor=0x000000"),
                     ("shape",("MISSILE","DISH_MISSILE","ISOTRI_25_MISSILE","ISOTRI_13_MISSILE","SQUARE_MISSILE","COMMAND_MISSILE"))
+                ]
+            },
+        },
+
+        "SHIELD":{
+            "args":[],
+            "child": {
+                "name": "shield",
+                "args": [
+                    ("strength",100,1000),
+                    ("regen",10,500),
+                    ("delay",.5,3),
+                    ("radius",20,250),
+                    ("power",.5,1.5),
+                    ("color","0x"),
+                    ("damagedColor","0x"),
+                    ("lineColor=0x"),
                 ]
             },
         },
@@ -107,8 +120,26 @@ kblockSettings = {
             ]
         },
 
+        "COMMAND": {
+            "extras": [
+                (1,"GENERATOR",[("generatorCapacityPerSec",10,500),("powerCapacity",50,1500)]),
+                (1,"REGROWER",[]),
+                (.5,"ASSEMBLER",[]),
+                (.2,"TORQUER",[("torquerTorque",100,5000)]),
+                (.2,"TELEPORTER",[("teleporterRadius",100,1000),("teleporterPower",0.0,2)]),
+            ],
+            "args":[],
+        },
+
         #short ones after here
-        "TRACTOR":{"args":[("tractorRadius",100,1200)]}
+        "TRACTOR":{"args":[("tractorRadius",100,1200)]},
+        "FIN":{"args":[("finForce",5,20)]},
+        "EXPLODE":{"args":[("explodeDamage",10,500),("explodeRadius",10,100)]},
+        "GENERATOR":{"args":[("generatorCapacityPerSec",10,500),("powerCapacity",50,1500)]},
+        "TELEPORTER":{"args":[("teleporterRadius",100,1000),("teleporterPower",0.0,2)]},
+        "TORQUER":{"args":[("torquerTorque",100,500)]},
+
+        "FACTORY":{"args":[]},
     }
 
 }
@@ -145,15 +176,15 @@ kblockPals = [
         "turrets": ["OCTAGON","HEPTAGON","GEM_4","GEM_3"],
     },
     {
-        "hull": ["TRI","HEXAGON","RHOMBUS_72_108","RHOMBUS_36_144","ISTOTRI_80","ISTOTRI_72","ISTOTRI_36","ISTOTRI_25","ISTOTRI_13","ISTOTRI_6","ISTOTRI_3"],
+        "hull": ["TRI","HEXAGON","RHOMBUS_72_108","RHOMBUS_36_144","ISOTRI_80","ISOTRI_72","ISOTRI_36","ISOTRI_25","ISOTRI_13","ISOTRI_6","ISOTRI_3"],
         "launchers": ["RECT_LAUNCHER1","RECT_LAUNCHER","GEM_3_LAUNCHER","GEM_4_LAUNCHER"],
         "spinals": ["RHOMBUS_36_144","RHOMBUS_72_108","TRI","HEXAGON"],
         "turrets": ["PENTAGON","RHOMBUS_72_108","HEXAGON","TRI"],
     },
     {
-        "hull": ["ISTOTRI_80","ISTOTRI_72","ISTOTRI_36","ISTOTRI_25","ISTOTRI_13","ISTOTRI_6","ISTOTRI_3"],
+        "hull": ["ISOTRI_80","ISOTRI_72","ISOTRI_36","ISOTRI_25","ISOTRI_13","ISOTRI_6","ISOTRI_3"],
         "launchers": ["RECT_LAUNCHER1","RECT_LAUNCHER","GEM_3_LAUNCHER","GEM_4_LAUNCHER","HEPTAGON_LAUNCHER"],
-        "spinals": ["ISTOTRI_36","ISTOTRI_25","ISTOTRI_13"],
+        "spinals": ["ISOTRI_36","ISOTRI_25","ISOTRI_13"],
         "turrets": ["PENTAGON","TRI","HEPTAGON"],
     },
 ]
