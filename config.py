@@ -58,6 +58,7 @@ kblockSettings = {
                     ("muzzleVel",500,2400),
                     ("recoil",0.0,3),
                     ("burstyness",0.0,1),
+                    ("spread",0.0,1.4),
                     ("color","0xff")
                 ]
             },
