@@ -155,7 +155,7 @@ def genBases(num=kbaseSettings["colors"],features=kbaseSettings["features"],args
     global blocks
     out=[]
     for i in range(num):
-        block=Block(features,args+[("sort=0")],base=True)
+        block=Block(features,args+[("sort=500")],base=True)
         block.actualize()
         blocks.append(block)
         out.append(block)
