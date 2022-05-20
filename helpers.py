@@ -109,16 +109,6 @@ class Block:
         if self.extends:
             features+=self.extendBlock.features#append their features
 
-            # args=[]
-            # for i in range(len(self.args)):#and make sure not to ovverwrite their args
-            #     ine=False
-            #     a=self.args[i]
-            #     for ea in self.extendBlock.args:
-            #         if len(a)==len(ea) and a[0]==ea[0]:
-            #             ine=True
-            #     if not ine:
-            #         args.append(a)
-
         lines=["{"]
         if id:
             lines.append("\t"+str(self.id)+",")
