@@ -69,7 +69,7 @@ kblockSettings = {
             ],
             "args":[
                 ("replicateTime",.1,10),
-                ("launcherPower",50,700),
+                ("launcherPower",50,200),
                 ("launcherOutSpeed",-500,1500),
             ],
             "child": {
@@ -123,7 +123,7 @@ kblockSettings = {
 
         "COMMAND": {
             "extras": [
-                (1,"GENERATOR",[("generatorCapacityPerSec",10,500),("powerCapacity",50,1500)]),
+                (1,"GENERATOR",[("generatorCapacityPerSec",100,1000),("powerCapacity",100,1500)]),
                 (1,"REGROWER",[]),
                 (.5,"ASSEMBLER",[]),
                 (.2,"TORQUER",[("torquerTorque",100,5000)]),
@@ -139,7 +139,9 @@ kblockSettings = {
         "GENERATOR":{"args":[("generatorCapacityPerSec",10,500),("powerCapacity",50,1500)]},
         "TELEPORTER":{"args":[("teleporterRadius",100,1000),("teleporterPower",0.0,2)]},
         "TORQUER":{"args":[("torquerTorque",100,500)]},
+        "MELEE":{"args":[("meleeDamage",.75,5)]},
 
+        #no-args after here
         "FACTORY":{"args":[]},
     }
 
