@@ -1,6 +1,7 @@
 import helpers as hp
 from config import *
 from time import time as ttime
+from random import randint
 
 bases=hp.genBases()
 bpal=hp.randitem(kblockPals)
@@ -27,7 +28,7 @@ core=hp.Block(
     extras=kblockSettings["features"]["COMMAND"]["extras"],
 )
 core.actualize()
-print("\n>> generated core with features "+"|".join(core.features))
+print(">> generated core with features "+"|".join(core.features))
 hp.blocks.append(core)
 
 count=0
@@ -38,13 +39,52 @@ for shape in bpal["hull"]:
             count+=1
             #it feels wrong this is all the code needed to do this
             #but that's just because of all the library work happening here
-print("\n>> finished hull generation with "+str(count)+" blocks")
+print("\n finished hull generation with "+str(count)+" blocks!")
 
+print("\n>> generating unique blocks")
+amount=randint(2,7)
+extend=hp.randitem(bases)
+sc=randint(bscales[0],bscales[1])
+print(">> count: "+str(amount))
+print(">> extending base id "+str(extend.id))
+print(">> scale: "+str(sc))
+
+shapes=[hp.randitem(bpal["hull"]) for i in range(amount)]
+print(">> shapes:\n "+"\n ".join([i for i in shapes]))
+
+for shape in shapes:
+    fcount=randint(1,4)
+    feats=[hp.randitem(list(kblockSettings["features"].keys())) for i in range(fcount)]
+    print(">> generating unique: "+" ".join(feats))
+    ars=[]
+    exts=[]
+    chd=[]
+    for f in feats:
+        data=kblockSettings["features"][f]
+        ar=hp.trykey("args",data)
+        et=hp.trykey("extras",data)
+        cd=hp.trykey("child",data)
+        if ar:
+            ars+=ar
+        if et:
+            exts+=et
+        if cd:
+            chd+=cd
+    hp.blocks.append(hp.Block(
+        feats,
+        [("shape="+shape),("scale="+str(sc)),("name=\"hull\""),("sort=10")]+ars,
+        extras=exts,
+        extends=extend,
+        children=chd
+    ))
+
+print("\n finished unique generation with "+str(count)+" blocks!")
+
+print("\n>> generating thrusters")
 thrust_scale_mult = hp.randfloat(.9,1.2)
 thrust_shape=hp.randitem(["THRUSTER","THRUSTER_PENT","DISH_THRUSTER","THRUSTER_RECT"])
 thrusterForce=hp.randfloat(7000,15000)
 extend=hp.randitem(bases)
-print("\n>> generating thrusters")
 print(">> INFO: each thruster's thrusterForce will be base force * scale * thrusterForce scale")
 print(">> base thrusterForce: "+str(thrusterForce))
 print(">> thrusterForce scale: "+str(thrust_scale_mult))
@@ -98,7 +138,7 @@ for i in range(wcount):
 
     hp.blocks.append(blonk)
 
-print("\n>> finished weapon generation with "+str(len(count))+" weapons!")
+print("\n finished weapon generation with "+str(len(count))+" weapons!")
 print(">> "+", ".join(count))
 
 out=input("\ndump data to file?(y/n) ")
