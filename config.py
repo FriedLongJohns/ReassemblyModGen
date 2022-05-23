@@ -107,7 +107,7 @@ kblockSettings = {
                     ("power",.5,1.5),
                     ("color","0x"),
                     ("damagedColor","0x"),
-                    ("lineColor=0x"),
+                    ("lineColor","0x"),
                 ]
             },
         },
