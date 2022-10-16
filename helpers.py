@@ -26,7 +26,7 @@ def randfloat(mn,mx):
         return randint(mn,mx)
 
     decimals=max(len(str(mn))-2,len(str(mx))-2)
-    return randint(mn*(10**decimals),mx*(10**decimals))/(10**decimals)
+    return randint(int(mn*(10**decimals)),int(mx*(10**decimals)))/(10**decimals)
 
 def randitem(lst):
     if lst:
@@ -57,11 +57,13 @@ class Block:
         self.actualized=False
         self.base=base
 
-    def actualize(self,verify=True):
+    def actualize(self,childize=True):
         # the main point of actualize() is to finish all features and prepare the block for randomization
         # and also verify self integrity so we don't gave duplicate features/args
 
-        if (not self.actualized) and self.extras:
+        self.sverify()
+
+        if (not self.actualized) or self.extras:#shhhhhh
             for extra in self.extras:
                 if randfloat(0.0,1.0)<=extra[0]:#chance
                     self.features.append(extra[1])
@@ -70,38 +72,48 @@ class Block:
                             self.args.append(arg)
 
             new_children=[]
-            for child in self.children:
-                blk=Block(
-                    trykey("features",child,excep=[]),
-                    child["args"],
-                    extends=False,
-                    extras=trykey("extras",child,excep=[]),
-                )
-                blk.actualize()
-                new_child=(child["name"],blk)
-                new_children.append(new_child)
+            if childize and self.children!=[] and type(self.children[0])==list:
+                for child in self.children:
+                    blk=Block(
+                        trykey("features",child,excep=[]),
+                        child["args"],
+                        extends=False,
+                        extras=trykey("extras",child,excep=[]),
+                    )
+                    blk.actualize(childize=False)
+                    new_child=(child["name"],blk)
+                    new_children.append(new_child)
 
             self.children=new_children
             self.actualized=True
 
-        if verify:
-            nargs=[]
-            for arg in self.args:
-                if not arg in nargs:
-                    nargs.append(arg)
-            self.args=nargs
-            nfeat=[]
-            for feat in self.features:
-                if not feat in nfeat:
-                    nfeat.append(feat)
-            self.features=nfeat
+            self.sverify()
 
         # print(str(self.id)+"  act args: "+str(self.args))
 
-
+    def sverify(self):
+        nargs=[]
+        for arg in self.args:
+            if not arg in nargs:
+                nargs.append(arg)
+        self.args=nargs
+        nfeat=[]
+        for feat in self.features:
+            if not feat in nfeat:
+                nfeat.append(feat)
+        self.features=nfeat
+        next=[]
+        for ext in self.extras:
+            if not ext in next:
+                next.append(ext)
+        self.extras=next
+        nkid=[]
+        for kid in self.children:
+            if not kid in nkid:
+                nkid.append(kid)
+        self.children=nkid
 
     def text(self,out="str",id=True):#out can be str or list
-        # print(str(self.id)+"  text feats: "+"|".join(self.features))
         features=self.features
         args=self.args
         # print(args)
@@ -133,6 +145,9 @@ class Block:
             else:
                 lines.append("\t"+arg+",")
 
+        # print(self.children)
+        # self.actualize()
+        # print(self.children)
         for child in self.children:
             lines.append("\t"+child[0]+"={\n"+"".join(["\t\t"+i+"\n" for i in child[1].text(out="list",id=False)[1:-1]])+"\n\t}")
         lines.append("}\n")

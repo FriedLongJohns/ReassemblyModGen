@@ -133,7 +133,7 @@ kblockSettings = {
         },
 
         #short ones after here
-        "TRACTOR":{"args":[("tractorRadius",100,1200)]},
+        "TRACTOR":{"args":[("tractorRange",100,1200)]},
         "FIN":{"args":[("finForce",5,20)]},
         "EXPLODE":{"args":[("explodeDamage",10,500),("explodeRadius",10,100)]},
         "GENERATOR":{"args":[("generatorCapacityPerSec",10,500),("powerCapacity",50,1500)]},
