@@ -15,6 +15,7 @@ kbaseSettings = {
     ]
 }
 
+gamePath="/Users/bob/Library/Application Support/Reassembly/"
 
 kblockSettings = {
     "scale bounds": [(1,3),(3,3),(1,2),(2,4)],#only hull blocks scale

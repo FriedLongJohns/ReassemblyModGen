@@ -163,7 +163,7 @@ for i in range(100):
             data+=b.text()
 
         gen_hash = hash(ttime())
-        name="/Users/bob/Library/Application Support/Reassembly/Mods/RANDOM_"+str(gen_hash)
+        name=gamePath+"Mods/RANDOM_"+str(gen_hash)
         os.system("mkdir \""+name+"\"")
         name+="/blocks.lua"
         with open(name,"w") as file:
